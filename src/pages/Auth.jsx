@@ -65,7 +65,7 @@ function Auth() {
 	return (
 		<div>
 			<h1>Login Signin Page</h1>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin}>Login Sushree</button>
       <button onClick={handleSignup}>Signin</button>
 		</div>
 	);
