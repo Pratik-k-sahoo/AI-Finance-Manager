@@ -1,6 +1,7 @@
 
 import BalanceCard from "@/components/dashboard/BalanceCard";
 import StatsCard from "@/components/dashboard/StatsCard";
+import TransactionCard from "@/components/dashboard/TransactionCard";
 import React, { useState } from "react";
 
 function Main() {
@@ -11,12 +12,7 @@ function Main() {
 			<main className="container mx-auto px-4 py-8 space-y-6">
 				<BalanceCard />
 				<StatsCard />
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-					<h3>SpendingChart</h3>
-					<h3>AIInsights</h3>
-				</div>
-				<h3>SavingGoals</h3>
-				<h3>TransactionList</h3>
+				<TransactionCard />
 			</main>
 		</div>
 	);
