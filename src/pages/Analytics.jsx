@@ -2,7 +2,11 @@ import React from 'react'
 
 function Analytics() {
   return (
-    <div>Analytics</div>
+    <div>
+      <h1>
+        I am Sarthak
+      </h1>
+    </div>
   )
 }
 
