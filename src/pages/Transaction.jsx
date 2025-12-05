@@ -1,3 +1,9 @@
+import { Wallet } from "lucide-react";
+import { Utensils } from "lucide-react";
+import { BringToFront } from "lucide-react";
+import { FireExtinguisher } from "lucide-react";
+import { ReceiptIndianRupee } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import React from "react";
 
 
@@ -14,48 +20,27 @@ const Icon = ({ name }) => {
   switch (name) {
     case "cart":
       return (
-        <svg className="w-6 h-6 text-indigo-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="10" cy="20" r="1" fill="currentColor"/>
-          <circle cx="18" cy="20" r="1" fill="currentColor"/>
-        </svg>
+        <ShoppingCart />
       );
     case "wallet":
       return (
-        <svg className="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M3 7h14v10H3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M21 9v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="18" cy="12" r="1" fill="currentColor"/>
-        </svg>
+        <Wallet />
       );
     case "bill":
       return (
-        <svg className="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M4 6h14v12H4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M8 10h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <ReceiptIndianRupee />
       );
     case "utensils":
       return (
-        <svg className="w-6 h-6 text-pink-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M7 2v11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M11 2v11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M3 21c4-2 8-2 12 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <Utensils />
       );
     case "gas":
       return (
-        <svg className="w-6 h-6 text-sky-600" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M6 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <rect x="3" y="8" width="10" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-          <path d="M17 7v6l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <FireExtinguisher />
       );
     default:
       return (
-        <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
-        </svg>
+        <BringToFront />
       );
   }
 };
