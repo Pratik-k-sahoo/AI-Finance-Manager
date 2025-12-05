@@ -1,4 +1,3 @@
-// Transaction.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Wallet,
@@ -12,9 +11,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-/* ------------------------------------------
-   INITIAL DATA
-   ------------------------------------------ */
+// INITIAL DATA
 const INITIAL_TRANSACTIONS = [
   { id: 1, title: "Groceries", category: "Food", amount: 3150, change: -150, icon: "cart" },
   { id: 2, title: "Salary", category: "Income", amount: 3000, change: 3000, icon: "wallet" },
@@ -25,9 +22,7 @@ const INITIAL_TRANSACTIONS = [
 
 const CATEGORIES = ["All", "Food", "Income", "Bills", "Transportation", "Shopping", "Other"];
 
-/* ------------------------------------------
-   ICON HANDLER
-   ------------------------------------------ */
+// ICON HANDLER
 const Icon = ({ name, className = "w-5 h-5 text-gray-700" }) => {
   switch (name) {
     case "cart":
@@ -51,17 +46,13 @@ const formatAmount = (value) => {
   return `${sign}$${abs.toLocaleString()}`;
 };
 
-/* ------------------------------------------
-   SEQUENTIAL ID GENERATOR (1,2,3,4...)
-   ------------------------------------------ */
+// SEQUENTIAL ID GENERATOR (1,2,3,4...)
 function getNextId(list) {
   if (!list || list.length === 0) return 1;
   return Math.max(...list.map((i) => i.id)) + 1;
 }
 
-/* ------------------------------------------
-   Small UI wrappers (replace with shadcn/ui if you use it)
-   ------------------------------------------ */
+// Small UI wrappers (replace with shadcn/ui if you use it)
 const Button = ({ children, variant = "default", className = "", ...props }) => {
   const variants = {
     default: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50",
@@ -94,9 +85,7 @@ const Select = ({ children, className = "", ...props }) => (
   </select>
 );
 
-/* ------------------------------------------
-   MAIN COMPONENT
-   ------------------------------------------ */
+// MAIN COMPONENT
 export default function Transaction() {
   // transactions state (persisted)
   const [transactions, setTransactions] = useState(() => {
@@ -275,7 +264,7 @@ export default function Transaction() {
             >
               Export
             </Button>
-            <Button variant="primary" onClick={openModal}>
+            <Button type="button" variant="primary" onClick={openModal}>
               Add Transaction
             </Button>
           </div>
@@ -288,6 +277,7 @@ export default function Transaction() {
           {/* Filters accordion */}
           <div className="px-6 py-3 border-b border-gray-200">
             <button
+              type="button"
               onClick={() => setIsFiltersOpen((s) => !s)}
               className="w-full flex items-center justify-between gap-3 bg-white/60 px-4 py-3 rounded-lg border border-gray-100"
               aria-expanded={isFiltersOpen}
@@ -343,17 +333,16 @@ export default function Transaction() {
                 <div className="md:col-span-3">
                   <label className="block text-xs text-gray-600 mb-1">Sort</label>
                   <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                    <option value="newest">Type</option>
-                    <option value="newest">Newest  </option>
-                    <option value="oldest">Oldest </option>
-                    <option value="amountDesc">Highest Amount </option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="amountDesc">Highest Amount</option>
                     <option value="amountAsc">Lowest Amount</option>
                   </Select>
                 </div>
 
                 {/* Buttons row */}
                 <div className="md:col-span-12 flex gap-3 justify-end">
-                  <Button variant="ghost" onClick={resetFilters}>
+                  <Button type="button" variant="ghost" onClick={resetFilters}>
                     Reset Filters
                   </Button>
                 </div>
@@ -425,7 +414,7 @@ export default function Transaction() {
           <div className="relative w-full max-w-lg bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Add Transaction</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+              <button type="button" onClick={closeModal} className="text-gray-400 hover:text-gray-600">
                 ✕
               </button>
             </div>
@@ -455,7 +444,9 @@ export default function Transaction() {
               {formError && <div className="text-sm text-red-500">{formError}</div>}
 
               <div className="flex justify-end gap-3 mt-4">
-                <Button onClick={closeModal}>Cancel</Button>
+                <Button type="button" onClick={closeModal}>
+                  Cancel
+                </Button>
                 <Button type="submit" variant="primary">
                   Save
                 </Button>
