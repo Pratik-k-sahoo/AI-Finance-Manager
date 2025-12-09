@@ -13,7 +13,7 @@ function App() {
         <Toaster />
         <Navbar />
 				<Routes>
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/:reason" element={<Auth />} />
           <Route path="/" element={<Main />} />
           <Route path="/transaction" element={<Transaction />} />
           <Route path="/analytics" element={<Analytics />} />
