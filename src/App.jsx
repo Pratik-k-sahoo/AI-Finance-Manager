@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router";
 import {Main, Auth, Admin, NotFound, Transaction, Analytics} from "@/pages";
 import { Toaster } from "sonner";
+import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -10,6 +11,7 @@ function App() {
 		<QueryClientProvider client={queryClient}>
 			<BrowserRouter>
         <Toaster />
+        <Navbar />
 				<Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/" element={<Main />} />
