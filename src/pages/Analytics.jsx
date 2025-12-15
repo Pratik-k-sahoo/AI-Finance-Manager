@@ -1,7 +1,8 @@
 import React from 'react'
 import { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { TrendingUp,TrendingDown, PieChart as PieChartIcon } from 'lucide-react';
+import { PieChart, Pie,  Bar, Cell,BarChart,CartesianGrid,XAxis,
+  YAxis,LineChart,Line, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { TrendingUp,TrendingDown,BarChart3, PieChart as PieChartIcon,LineChart as LineChartIcon } from 'lucide-react';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card';
 import { DollarSign } from 'lucide-react';
 import { storage } from '@/lib/storage';
@@ -193,10 +194,161 @@ function Analytics() {
 
                   </ResponsiveContainer>
               </div>
+               <div className="flex flex-wrap justify-center gap-4 mt-4">
+                {categoryData.map((entry, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: entry.fill }}
+                    />
+                    <span className="text-sm text-muted-foreground">{entry.category}</span>
+                  </div>
+                ))}
+              </div>
             </CardContent>
         </Card>
+        
 
-      </div>
+
+        <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-chart-2/10">
+                  <BarChart3 className="h-4 w-4 text-chart-2" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Category Comparison</CardTitle>
+                  <CardDescription>Compare spending across categories</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[340px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={categoryData} margin={{ top: 20, right: 20, left: 20, bottom: 60 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis
+                      dataKey="category"
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                      tickFormatter={(value) => `$${value}`}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar
+                      dataKey="amount"
+                      radius={[4, 4, 0, 0]}
+                      name="Expense"
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`bar-${index}`} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-success/10">
+                <LineChartIcon className="h-4 w-4 text-success" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Income vs Expense Trend</CardTitle>
+                <CardDescription>Track your financial flow over time</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[350px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                  />
+                  <YAxis
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                    tickFormatter={(value) => `$${value}`}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                  <Line
+                    type="monotone"
+                    dataKey="income"
+                    stroke="hsl(var(--success))"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: "hsl(var(--success))" }}
+                    activeDot={{ r: 6 }}
+                    name="Income"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="expense"
+                    stroke="hsl(var(--destructive))"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: "hsl(var(--destructive))" }}
+                    activeDot={{ r: 6 }}
+                    name="Expense"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="savings"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: "hsl(var(--primary))" }}
+                    activeDot={{ r: 6 }}
+                    name="Savings"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-lg">Financial Summary</CardTitle>
+            <CardDescription>Overview of your financial health</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="text-center p-4 rounded-lg bg-success/10">
+                <p className="text-2xl font-bold text-success">
+                  ${monthlyData.reduce((sum, m) => sum + (m.income || 0), 0).toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Total Income</p>
+              </div>
+              <div className="text-center p-4 rounded-lg bg-destructive/10">
+                <p className="text-2xl font-bold text-destructive">
+                  ${monthlyData.reduce((sum, m) => sum + (m.expense || 0), 0).toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Total Expenses</p>
+              </div>
+              <div className="text-center p-4 rounded-lg bg-primary/10">
+                <p className="text-2xl font-bold text-primary">
+                  ${monthlyData.reduce((sum, m) => sum + (m.savings || 0), 0).toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Total Savings</p>
+              </div>
+              <div className="text-center p-4 rounded-lg bg-chart-3/10">
+                <p className="text-2xl font-bold" style={{ color: "hsl(var(--chart-3))" }}>
+                  {Math.round((monthlyData.reduce((sum, m) => sum + (m.savings || 0), 0) / Math.max(monthlyData.reduce((sum, m) => sum + (m.income || 0), 0), 1)) * 100)}%
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Savings Rate</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
     </main>
   </div>
 )
