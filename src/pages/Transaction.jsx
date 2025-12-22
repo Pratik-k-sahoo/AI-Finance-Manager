@@ -218,7 +218,7 @@ export default function Transaction() {
     // Sorting
     switch (sortBy) {
       case "newest":
-        // IDs increasing when appended; newest = largest ID -> show last first
+        
         list.sort((a, b) => b.id - a.id);
         break;
       case "oldest":
@@ -239,7 +239,7 @@ export default function Transaction() {
 
   return (
     <div className="h-screen w-full bg-gray-50">
-      {/* HEADER */}
+    
       <header className="w-full bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
           <div>
@@ -271,7 +271,6 @@ export default function Transaction() {
         </div>
       </header>
 
-      {/* MAIN */}
       <main className="max-w-7xl mx-auto px-6 py-6 h-[calc(100vh-72px)]">
         <div className="h-full bg-blue-50/40 rounded-2xl border border-blue-200 shadow-sm overflow-hidden flex flex-col">
           {/* Filters accordion */}
@@ -292,7 +291,7 @@ export default function Transaction() {
               </div>
             </button>
 
-            {/* Accordion content */}
+        
             {isFiltersOpen && (
               <div className="mt-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 {/* Category */}
