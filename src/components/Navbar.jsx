@@ -2,8 +2,17 @@ import { Wallet } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import NavLink from "./NavLink";
+import { Button } from "./ui/button";
+import { useSelector } from "react-redux";
+import { account } from "@/lib/appWrite";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/slices/authSlice";
+import { useNavigate } from "react-router";
 
 const Navbar = () => {
+	const { user, session } = useSelector((state) => state.auth);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const navItems = [
 		{
 			path: "/",
@@ -24,6 +33,21 @@ const Navbar = () => {
 	];
 
 	const [scrolled, setScrolled] = useState(false);
+
+	const handleLogout = async () => {
+		try {
+			let mySession;
+			if (session) mySession = session;
+			else mySession = user;
+			const res = await account.deleteSession({
+				sessionId: mySession.$id,
+			});
+			dispatch(logout());
+			navigate("/auth/login");
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -67,12 +91,29 @@ const Navbar = () => {
 								} hover:text-foreground hover:border-b border-black px-3 py-2 rounded-md font-bold border-0 transition-all`}
 								activeClassName="text-foreground font-medium bg-accent"
 								key={item.name}
+                isLoggedIn={user ? true : false}
 							>
 								{item.name}
 							</NavLink>
 						))}
 					</div>
-					<div id="auth-items"></div>
+					<div id="auth-items">
+						{user && <Button onClick={handleLogout}>Logout</Button>}
+						{!user && (
+							<div className="flex gap-5">
+								<Button>
+									<Link className="w-full h-full" to={"/auth/login"}>
+										Login
+									</Link>
+								</Button>
+								<Button className="bg-accent">
+									<Link className="w-full h-full" to={"/auth/signup"}>
+										Signup
+									</Link>
+								</Button>
+							</div>
+						)}
+					</div>
 				</nav>
 			</div>
 		</div>
