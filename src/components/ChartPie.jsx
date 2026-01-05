@@ -1,23 +1,39 @@
 import React from "react";
-import { Pie, PieChart } from "recharts";
+import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-const chartData = [
-	{ browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-	{ browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-	{ browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-	{ browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-	{ browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-
-const ChartPie = () => {
+const ChartPie = ({ chartData }) => {
 	return (
 		<PieChart width={400} height={400} className="mx-auto">
-			<ChartTooltip
-				cursor={false}
-				content={<ChartTooltipContent hideLabel />}
+			<Pie
+				data={chartData}
+				cx="50%"
+				cy="50%"
+				labelLine={false}
+				label={({ name, percentage }) => `${name}: ${percentage.toFixed(0)}%`}
+				outerRadius={80}
+				fill="#8884d8"
+				dataKey="value"
+			>
+				{chartData.map((entry, index) => (
+					<Cell key={`cell-${index}`} fill={entry.fill} />
+				))}
+			</Pie>
+			<Tooltip
+				formatter={(value) =>
+					`${value.toLocaleString("en-IN", {
+						maximumFractionDigits: 2,
+						style: "currency",
+						currency: "INR",
+					})}`
+				}
+				contentStyle={{
+					backgroundColor: "hsl(var(--card))",
+					border: "1px solid hsl(var(--border))",
+					borderRadius: "0.5rem",
+				}}
 			/>
-			<Pie data={chartData} dataKey="visitors" nameKey="browser" stroke="0" />
+      <Legend />
 		</PieChart>
 	);
 };

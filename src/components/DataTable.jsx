@@ -3,50 +3,76 @@ import { Card } from "./ui/card";
 import { Trash2 } from "lucide-react";
 import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import useAppMutation from "@/hooks/useAppMutation";
+import { deleteExpense, deleteIncome } from "@/lib/api";
+import { Button } from "./ui/button";
 
-const DataTable = ({ details }) => {
+const DataTable = ({ details, id }) => {
+	const {
+		mutate: deleteTransaction,
+		isPending: incomePending,
+		isError: isIncomeError,
+		error: incomeError,
+	} = useAppMutation({
+		mutationFn: details.type === "expense" ? deleteExpense : deleteIncome,
+		invalidateQueries: ["dashboard", id],
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
+	const handleDeleteTransaction = async (id) => {
+		await deleteTransaction(id);
+	};
 	return (
 		<Card className="p-6">
 			<div className="flex items-center justify-between">
 				<div>
 					<div className="flex gap-6">
 						<h3 className="text-lg font-medium underline underline-offset-2">
-							{details.Description}
+							{details.description}
 						</h3>
 						<Badge
 							className={`text-md text-center capitalize ${
-								details.Category === "income"
+								details?.type === "income"
 									? "bg-accent text-primary-foreground"
 									: "bg-foreground"
 							}`}
 							variant=""
 						>
-							{details.Category}
+							{details.category || details.source}
 						</Badge>
 					</div>
 					<p className="text-foreground/50">
-						{new Date().toLocaleDateString()}
+						{new Date(details.date).toLocaleString("en-IN", {
+							dateStyle: "medium",
+							timeStyle: "short",
+						})}
 					</p>
 				</div>
 				<div className="flex gap-10 text-xl font-bold">
 					<h2
 						className={`${
-							details.Type !== "Expense" ? "text-accent" : "text-red-600"
+							details.type !== "expense" ? "text-accent" : "text-red-600"
 						}`}
 					>
-						{details.Type === "Expense" ? "- " : "+ "}
-						{details.Amount.toLocaleString("en-IN", {
+						{details.type === "expense" ? "- " : "+ "}
+						{details.amount.toLocaleString("en-IN", {
 							maximumFractionDigits: 2,
 							style: "currency",
 							currency: "INR",
 						})}
 					</h2>
-					<button>
-						<Pencil />
-					</button>
-					<button>
-						<Trash2 />
-					</button>
+					<Button asChild className="w-fit">
+						<Pencil className="text-primary-foreground w-8 h-8" />
+					</Button>
+					<Button
+						asChild
+						className="w-fit"
+						onClick={() => handleDeleteTransaction(details._id)}
+					>
+						<Trash2 className="text-primary-foreground w-8 h-8" />
+					</Button>
 				</div>
 			</div>
 		</Card>

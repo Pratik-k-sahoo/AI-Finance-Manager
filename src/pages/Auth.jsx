@@ -1,17 +1,17 @@
 import { useState, useEffect, useId } from "react";
-import { toast } from "sonner";
-import { Wallet } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { Card } from "../components/ui/card";
 import { useForm, Controller } from "react-hook-form";
-import { Field, FieldGroup, FieldLabel } from "../components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { account } from "@/lib/appWrite";
 import { useDispatch } from "react-redux";
-import { login, setSession } from "@/redux/slices/authSlice";
+import { login } from "@/redux/slices/authSlice";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Loader } from "lucide-react";
+import { Query } from "appwrite";
+import { createUser, loginUser } from "@/lib/api";
+import useAppMutation from "@/hooks/useAppMutation";
 
 function Auth() {
 	const navigate = useNavigate();
@@ -21,6 +21,15 @@ function Auth() {
 	const [error, setError] = useState("");
 	const { user } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
+
+	const form = useForm({
+		defaultValues: {
+			name: "",
+			email: "",
+			password: "",
+		},
+	});
+	const { reset } = form;
 	useEffect(() => {
 		if (user) {
 			navigate("/");
@@ -30,18 +39,44 @@ function Auth() {
 		}
 	}, [user, navigate, reason]);
 
+	const {
+		mutate: userLogin,
+		isPending: isLoginPending,
+		isError: isLoginError,
+		error: loginError,
+	} = useAppMutation({
+		mutationFn: loginUser,
+		invalidateQueries: ["user"],
+		onSuccess: (data) => {
+			dispatch(login(data?.user));
+			navigate("/", { replace: true });
+		},
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
+	const {
+		mutate: userSignup,
+		isPending: isSignupPending,
+		isError: isSignupError,
+		error: signupError,
+	} = useAppMutation({
+		mutationFn: createUser,
+		invalidateQueries: ["user"],
+		onSuccess: (data) => {
+			dispatch(login(data?.user));
+			navigate("/", { replace: true });
+		},
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
 	const handleLogin = async (e) => {
 		try {
 			setLoading(true);
-			const session = await account.createEmailPasswordSession({
-				email: e.email,
-				password: e.password,
-			});
-			const userData = await account.get();
-			dispatch(setSession(session));
-			dispatch(login(userData));
-			console.log(userData);
-			navigate("/");
+			await userLogin(e);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -52,36 +87,13 @@ function Auth() {
 	const handleSignup = async (e) => {
 		setLoading(true);
 		try {
-			const userId = crypto.randomUUID();
-			const result = await account.create({
-				userId,
-				email: e.email,
-				name: e.fName,
-				password: e.password,
-			});
-
-			const userData = { ...result.targets[0], name: e.fName };
-			console.log(userData);
-			dispatch(login(userData));
-			const session = await account.createEmailPasswordSession({
-				email: e.email,
-				password: e.password,
-			});
-			dispatch(setSession(session));
-			navigate("/");
+			await userSignup(e);
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setLoading(false);
 		}
 	};
-	const form = useForm({
-		defaultValues: {
-			fName: "",
-			email: "",
-			password: "",
-		},
-	});
 	return (
 		<div className="min-h-[calc(100vh-4.05rem)] bg-linear-to-br from-primary to-accent  flex items-center justify-center">
 			<main className="container px-4 py-8 space-y-6 flex justify-center items-center">
@@ -164,17 +176,17 @@ function Auth() {
 							>
 								<FieldGroup>
 									<Controller
-										name="fName"
+										name="name"
 										control={form.control}
 										render={({ field, fieldState }) => (
 											<Field data-invalid={fieldState.invalid}>
-												<FieldLabel className="text-lg" htmlFor="fName">
+												<FieldLabel className="text-lg" htmlFor="name">
 													FullName:
 												</FieldLabel>
 												<Input
 													{...field}
 													className="w-full"
-													id="fName"
+													id="name"
 													aria-invalid={fieldState.invalid}
 													placeholder="Enter Your FullName"
 												/>
@@ -240,11 +252,12 @@ function Auth() {
 					</div>
 				</Card>
 			</main>
-			{loading && (
-				<Card className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] shadow-none border-none w-2xl bg-transparent backdrop-blur-xs flex items-center h-80 justify-center">
-					<Loader className="animate-spin w-xl h-30" />
-				</Card>
-			)}
+			{isLoginPending ||
+				(isSignupPending && (
+					<Card className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] shadow-none border-none w-2xl bg-transparent backdrop-blur-xs flex items-center h-80 justify-center">
+						<Loader className="animate-spin w-xl h-30" />
+					</Card>
+				))}
 		</div>
 	);
 }

@@ -1,26 +1,35 @@
-import React, {useState} from 'react'
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
 import { IndianRupee } from "lucide-react";
 import { Wallet } from "lucide-react";
-import DataBox from '../DataBox';
+import DataBox from "../DataBox";
+import { useSelector } from "react-redux";
+import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
+import { TrendingUp } from "lucide-react";
+import { TrendingDown } from "lucide-react";
+import { useDispatch } from "react-redux";
 
-const BalanceCard = () => {
-  const balance = 6000;
-  const [currDate, setCurrDate] = useState(
-		new Date().toLocaleString("default", { month: "long" }) +
-			" " +
-			new Date().getFullYear()
-	);
-  return (
+const BalanceCard = ({ currDate, setCurrDate }) => {
+	const dispatch = useDispatch();
+	const { user } = useSelector((state) => state.auth);
+	const { data } = useSelector((state) => state.dashboard);
+
+	const { analytics, transactions } = useExpenseAnalytics(currDate);
+	const biggestExpense = transactions
+		.filter((t) => t.type === "expense")
+		.sort((a, b) => b.amount - a.amount)[0];
+	const isPositive = analytics.netSavings >= 0;
+
+	return (
 		<Card
 			id="balance-card"
 			className="p-6 bg-primary text-primary-foreground shadow-md border-0"
@@ -35,17 +44,46 @@ const BalanceCard = () => {
 							<span className="font-semibold text-shadow-md">
 								Current Balance
 							</span>
+							{isPositive ? (
+								<TrendingUp className="h-5 w-5 opacity-80" />
+							) : (
+								<TrendingDown className="h-5 w-5 opacity-80" />
+							)}
 						</div>
 						<div className="text-4xl flex flex-col items-center gap-2">
 							<h2 className="text-4xl font-bold tracking-tight flex items-center">
-								{balance.toLocaleString("en-IN", {
+								{data?.totalBalance?.toLocaleString("en-IN", {
 									maximumFractionDigits: 2,
 									style: "currency",
 									currency: "INR",
 								})}
 							</h2>
 							<p className="text-sm opacity-80 flex items-center gap-1 justify-center">
-								<span>+${balance.toFixed(2)} this month</span>
+								{isPositive ? (
+									<>
+										<TrendingUp className="h-3 w-3" />
+										<span>
+											{analytics.netSavings.toLocaleString("en-IN", {
+												maximumFractionDigits: 2,
+												style: "currency",
+												currency: "INR",
+											})}{" "}
+											this month
+										</span>
+									</>
+								) : (
+									<>
+										<TrendingDown className="h-3 w-3" />
+										<span>
+											{Math.abs(analytics.netSavings).toLocaleString("en-IN", {
+												maximumFractionDigits: 2,
+												style: "currency",
+												currency: "INR",
+											})}{" "}
+											deficit this month
+										</span>
+									</>
+								)}
 							</p>
 						</div>
 					</div>
@@ -58,37 +96,51 @@ const BalanceCard = () => {
 						</div>
 						<div className="text-4xl flex flex-col items-center gap-2">
 							<h2 className="text-4xl font-bold tracking-tight flex items-center">
-								{balance.toLocaleString("en-IN", {
+								{(data?.totalIncome)?.toLocaleString("en-IN", {
 									maximumFractionDigits: 2,
 									style: "currency",
 									currency: "INR",
 								})}
 							</h2>
 							<p className="text-sm opacity-80 flex items-center gap-1 justify-center">
-								<span>+${balance.toFixed(2)} this month</span>
+								<span>
+									{analytics.totalIncome.toLocaleString("en-IN", {
+										maximumFractionDigits: 2,
+										style: "currency",
+										currency: "INR",
+									})}{" "}
+									this month
+								</span>
 							</p>
 						</div>
 					</div>
 				</div>
 				<DataBox
 					heading={"Biggest Expense Amount"}
-					mainDetails={balance.toLocaleString("en-IN", {
+					mainDetails={(biggestExpense?.amount || 0).toLocaleString("en-IN", {
 						maximumFractionDigits: 2,
 						style: "currency",
 						currency: "INR",
 					})}
-          details={`+$${balance.toFixed(2)} this month`}
+					details={`${
+						analytics?.biggestExpense?.amount?.toLocaleString("en-IN", {
+							maximumFractionDigits: 2,
+							style: "currency",
+							currency: "INR",
+						}) || "NA"
+					} this month`}
 				/>
 				<DataBox
 					heading={"Biggest Expense Category"}
-					mainDetails={balance.toLocaleString("en-IN", {
-						maximumFractionDigits: 2,
-						style: "currency",
-						currency: "INR",
-					})}
-					details={`+$${balance.toFixed(2)} this month`}
+					mainDetails={biggestExpense?.category?.toUpperCase() || "NA"}
+					details={`${
+						analytics?.biggestExpense?.category?.toUpperCase() || "NA"
+					} this month`}
 				/>
-				<Select defaultValue={currDate} onValueChange={(e) => console.log(e)}>
+				<Select
+					defaultValue={currDate}
+					onValueChange={(value) => setCurrDate(value)}
+				>
 					<SelectTrigger className="w-fit text-black font-bold">
 						<SelectValue
 							className="placeholder:font-bold"
@@ -102,24 +154,24 @@ const BalanceCard = () => {
 					<SelectContent>
 						<SelectGroup>
 							<SelectLabel>Select month</SelectLabel>
-							<SelectItem value="January 2025">January 2025</SelectItem>
-							<SelectItem value="February 2025">February 2025</SelectItem>
-							<SelectItem value="March 2025">March 2025</SelectItem>
-							<SelectItem value="April 2025">April 2025</SelectItem>
-							<SelectItem value="May 2025">May 2025</SelectItem>
-							<SelectItem value="June 2025">June 2025</SelectItem>
-							<SelectItem value="July 2025">July 2025</SelectItem>
-							<SelectItem value="August 2025">August 2025</SelectItem>
-							<SelectItem value="September 2025">September 2025</SelectItem>
-							<SelectItem value="October 2025">October 2025</SelectItem>
-							<SelectItem value="November 2025">November 2025</SelectItem>
-							<SelectItem value="December 2025">December 2025</SelectItem>
+							<SelectItem value="January 2026">January 2026</SelectItem>
+							<SelectItem value="February 2026">February 2026</SelectItem>
+							<SelectItem value="March 2026">March 2026</SelectItem>
+							<SelectItem value="April 2026">April 2026</SelectItem>
+							<SelectItem value="May 2026">May 2026</SelectItem>
+							<SelectItem value="June 2026">June 2026</SelectItem>
+							<SelectItem value="July 2026">July 2026</SelectItem>
+							<SelectItem value="August 2026">August 2026</SelectItem>
+							<SelectItem value="September 2026">September 2026</SelectItem>
+							<SelectItem value="October 2026">October 2026</SelectItem>
+							<SelectItem value="November 2026">November 2026</SelectItem>
+							<SelectItem value="December 2026">December 2026</SelectItem>
 						</SelectGroup>
 					</SelectContent>
 				</Select>
 			</div>
 		</Card>
 	);
-}
+};
 
-export default BalanceCard
+export default BalanceCard;

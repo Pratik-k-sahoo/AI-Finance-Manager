@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 
 const TransactionCard = ({transactions}) => {
+  console.log(transactions);
 	return (
 		<Card className="bg-blue-50/40 shadow-sm overflow-hidden flex flex-col">
 			<div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-primary text-primary-foreground">
@@ -53,7 +54,7 @@ const TransactionCard = ({transactions}) => {
 							? "text-green-600"
 							: "text-red-500";
 						const amountColor =
-							tx.amount >= 0 ? "text-gray-900" : "text-gray-700";
+							tx.type === "expense" ? "text-red-900" : "text-green-700";
 
 						return (
 							<List

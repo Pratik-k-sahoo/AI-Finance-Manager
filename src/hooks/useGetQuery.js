@@ -1,0 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { useSelector } from "react-redux";
+
+const useGetQuery = (options) => {
+	const { user } = useSelector((state) => state.auth);
+	return useQuery({
+		...options,
+		enabled: !!user?._id && (options?.enabled ?? true),
+		queryKey: [...(options?.queryKey ?? []), user?._id],
+	});
+};
+
+export default useGetQuery;

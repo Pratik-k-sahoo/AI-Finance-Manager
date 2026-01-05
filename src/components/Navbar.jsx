@@ -4,23 +4,19 @@ import { Link } from "react-router";
 import NavLink from "./NavLink";
 import { Button } from "./ui/button";
 import { useSelector } from "react-redux";
-import { account } from "@/lib/appWrite";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
 import { useNavigate } from "react-router";
+import api from "@/lib/axiosBase";
 
 const Navbar = () => {
-	const { user, session } = useSelector((state) => state.auth);
+	const { user } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const navItems = [
 		{
 			path: "/",
 			name: "Home",
-		},
-		{
-			path: "/admin",
-			name: "Admin",
 		},
 		{
 			path: "/analytics",
@@ -36,14 +32,11 @@ const Navbar = () => {
 
 	const handleLogout = async () => {
 		try {
-			let mySession;
-			if (session) mySession = session;
-			else mySession = user;
-			const res = await account.deleteSession({
-				sessionId: mySession.$id,
-			});
-			dispatch(logout());
-			navigate("/auth/login");
+			const response = await api.post(`/${import.meta.env.VITE_USER_URL}/logout`);
+			if (response.status === 200) {
+				dispatch(logout());
+			}
+			navigate("/auth");
 		} catch (error) {
 			console.log(error);
 		}
@@ -91,7 +84,7 @@ const Navbar = () => {
 								} hover:text-foreground hover:border-b border-black px-3 py-2 rounded-md font-bold border-0 transition-all`}
 								activeClassName="text-foreground font-medium bg-accent"
 								key={item.name}
-                isLoggedIn={user ? true : false}
+								isLoggedIn={user ? true : false}
 							>
 								{item.name}
 							</NavLink>

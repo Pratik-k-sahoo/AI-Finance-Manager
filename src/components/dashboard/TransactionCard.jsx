@@ -1,7 +1,5 @@
-import React from "react";
-import {
-	Card
-} from "../ui/card";
+import React, { useState } from "react";
+import { Card } from "../ui/card";
 import {
 	Select,
 	SelectContent,
@@ -14,44 +12,17 @@ import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import DataTable from "../DataTable";
 
-const data = [
-	{
-		Type: "Expense",
-		Amount: 1200,
-		Category: "food",
-		Description: "Monthly groceries and dining out",
-	},
-	{
-		Type: "Expense",
-		Amount: 2500,
-		Category: "bills",
-		Description: "Electricity and internet bills",
-	},
-	{
-		Type: "Expense",
-		Amount: 1800,
-		Category: "travel",
-		Description: "Cab fares and weekend trip",
-	},
-	{
-		Type: "Expense",
-		Amount: 3000,
-		Category: "shopping",
-		Description: "Clothes and household items",
-	},
-	{
-		Type: "Expense",
-		Amount: 1500,
-		Category: "entertainment",
-		Description: "Movie tickets and streaming subscriptions",
-	},
-	{
-		Type: "Income",
-		Amount: 50000,
-		Category: "income",
-		Description: "Monthly salary credited",
-	},
-];
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Controller, useForm } from "react-hook-form";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
+import { addExpenseTransaction, addIncomeTransaction } from "@/lib/api";
+import useAppMutation from "@/hooks/useAppMutation";
+import AddTransactionForm from "../AddTransactionForm";
 
 const categories = [
 	{
@@ -72,40 +43,58 @@ const categories = [
 	},
 	{
 		value: "shopping",
-		name: "shopping",
+		name: "Shopping",
 	},
 	{
 		value: "entertainment",
-		name: "entertainment",
+		name: "Entertainment",
 	},
 	{
 		value: "healthcare",
-		name: "healthcare",
+		name: "Healthcare",
 	},
 	{
 		value: "education",
-		name: "education",
+		name: "Education",
 	},
 	{
 		value: "income",
-		name: "income",
+		name: "Income",
 	},
 	{
 		value: "others",
-		name: "others",
+		name: "Others",
 	},
 ];
 
-const TransactionCard = () => {
+const TransactionCard = ({ currDate }) => {
+	const { analytics } = useExpenseAnalytics(currDate);
+	const { user } = useSelector((state) => state.auth);
+	const [category, setCategory] = useState("all");
+
+	const transactions = analytics.recentTransaction
+		.filter((t) => {
+			if (category === "all") return true;
+			else {
+				return t.category === category || t.type === category;
+			}
+		})
+		.sort((a, b) => b.date - a.date);
+
 	return (
 		<div className="w-full">
-			<Card className="p-6">
+			<Card className="p-6 space-y-6">
 				<div className="flex justify-between">
 					<h2 className="text-3xl text-primary font-bold tracking-wide">
 						Transcation
 					</h2>
 					<div className="flex gap-4">
-						<Select defaultValue="all" onValueChange={(e) => console.log(e)}>
+						<Select
+							value={category}
+							onValueChange={(value) => {
+								setCategory(value);
+							}}
+						>
 							<SelectTrigger className="h-full w-48 capitalize">
 								<SelectValue placeholder="Select Category" />
 							</SelectTrigger>
@@ -123,15 +112,13 @@ const TransactionCard = () => {
 								</SelectGroup>
 							</SelectContent>
 						</Select>
-						<Button>
-							<Plus />
-							<h4>Add Transaction</h4>
-						</Button>
+
+						<AddTransactionForm />
 					</div>
 				</div>
 				<div className="flex flex-col gap-4 mx-10">
-					{data.map((transactionData, idx) => (
-						<DataTable key={idx} details={transactionData} />
+					{transactions.map((transactionData, idx) => (
+						<DataTable key={idx} details={transactionData} id={user?._id} />
 					))}
 				</div>
 			</Card>
