@@ -241,6 +241,7 @@ const fallbackMonthlyData = [
 
 const CustomTooltip = ({ active, payload, label }) => {
 	if (active && payload && payload.length) {
+		console.log(payload);
 		return (
 			<div className="bg-card border border-border rounded-lg shadow-lg p-3">
 				<p className="text-sm font-medium text-card-foreground mb-1">{label}</p>
@@ -250,7 +251,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 						className="text-sm"
 						style={{ color: entry.color || "inherit" }}
 					>
-						{entry.name}: ${entry.value.toLocaleString()}
+						{entry.name}:{" "}
+						{entry.value.toLocaleString("en-IN", {
+							maximumFractionDigits: 2,
+							style: "currency",
+							currency: "INR",
+						})}
 					</p>
 				))}
 			</div>
@@ -285,9 +291,11 @@ function Analytics() {
 		const data = analytics.categoryBreakdown
 			? analytics.categoryBreakdown.map((cat, idx) => ({
 					...cat,
+					name: cat.category,
 					fill: COLORS[idx % COLORS.length],
-			  }))
+				}))
 			: [];
+		console.log(data);
 		return data && data.length > 0 ? data : [];
 	}, [analytics.categoryBreakdown]);
 
@@ -338,7 +346,7 @@ function Analytics() {
 											maximumFractionDigits: 2,
 											style: "currency",
 											currency: "INR",
-									  })}`
+										})}`
 									: "No data"}
 							</p>
 						</CardContent>
@@ -393,7 +401,6 @@ function Analytics() {
 											outerRadius={100}
 											paddingAngle={2}
 											dataKey="amount"
-											nameKey="catagory"
 											label={(entry) =>
 												`${entry.category} ${entry.percentage.toFixed(0)}%`
 											}
@@ -463,7 +470,13 @@ function Analytics() {
 												fill: "hsl(var(--muted-foreground))",
 												fontSize: 12,
 											}}
-											tickFormatter={(value) => `$${value}`}
+											tickFormatter={(value) =>
+												`${value.toLocaleString("en-IN", {
+													maximumFractionDigits: 2,
+													style: "currency",
+													currency: "INR",
+												})}`
+											}
 										/>
 										<Tooltip content={<CustomTooltip />} />
 										<Bar dataKey="amount" radius={[4, 4, 0, 0]} name="Expense">
@@ -517,7 +530,13 @@ function Analytics() {
 											fill: "hsl(var(--muted-foreground))",
 											fontSize: 12,
 										}}
-										tickFormatter={(value) => `$${value}`}
+										tickFormatter={(value) =>
+											`${value.toLocaleString("en-IN", {
+												maximumFractionDigits: 2,
+												style: "currency",
+												currency: "INR",
+											})}`
+										}
 									/>
 									<Tooltip content={<CustomTooltip />} />
 									<Legend wrapperStyle={{ paddingTop: "20px" }} />
@@ -603,7 +622,7 @@ function Analytics() {
 									style={{ color: "hsl(var(--chart-3))" }}
 								>
 									{Math.round(
-										(analytics.netSavings / analytics.totalIncome) * 100
+										(analytics.netSavings / analytics.totalIncome) * 100,
 									)}
 									%
 								</p>

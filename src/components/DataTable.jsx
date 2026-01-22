@@ -1,11 +1,12 @@
 import React from "react";
 import { Card } from "./ui/card";
 import { Trash2 } from "lucide-react";
-import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import useAppMutation from "@/hooks/useAppMutation";
 import { deleteExpense, deleteIncome } from "@/lib/api";
 import { Button } from "./ui/button";
+import UpdateTransactionForm from "./UpdateTransactionForm";
+import { Loader } from "lucide-react";
 
 const DataTable = ({ details, id }) => {
 	const {
@@ -64,14 +65,18 @@ const DataTable = ({ details, id }) => {
 						})}
 					</h2>
 					<Button asChild className="w-fit">
-						<Pencil className="text-primary-foreground w-8 h-8" />
+						<UpdateTransactionForm details={details} id={id} />
 					</Button>
 					<Button
 						asChild
 						className="w-fit"
 						onClick={() => handleDeleteTransaction(details._id)}
 					>
-						<Trash2 className="text-primary-foreground w-8 h-8" />
+						{incomePending ? (
+							<Loader className="text-primary-foreground w-8 h-8 animate-pulse" />
+						) : (
+							<Trash2 className="text-primary-foreground w-8 h-8" />
+						)}
 					</Button>
 				</div>
 			</div>

@@ -195,3 +195,41 @@ export async function downloadExpenseExcel() {
 		);
 	}
 }
+
+export async function updateIncomeTransaction({credentials, id}) {
+  try {
+		const response = await api.patch(
+			`/${import.meta.env.VITE_INCOME_URL}/${id}`,
+			credentials,
+		);
+
+		return response?.data;
+	} catch (error) {
+    console.log(error)
+		throw new Error(
+			error?.response?.data?.message ||
+				error?.data?.message ||
+				error?.message ||
+				"Something went wrong.",
+		);
+	}
+}
+
+export async function updateExpenseTransaction({payload, id}) {
+  try {
+		const response = await api.patch(
+			`/${import.meta.env.VITE_EXPENSE_URL}/${id}`,
+			payload,
+		);
+
+		return response?.data;
+	} catch (error) {
+    console.log(error)
+		throw new Error(
+			error?.response?.data?.message ||
+				error?.data?.message ||
+				error?.message ||
+				"Something went wrong.",
+		);
+	}
+}

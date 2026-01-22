@@ -252,12 +252,11 @@ function Auth() {
 					</div>
 				</Card>
 			</main>
-			{isLoginPending ||
-				(isSignupPending && (
-					<Card className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] shadow-none border-none w-2xl bg-transparent backdrop-blur-xs flex items-center h-80 justify-center">
-						<Loader className="animate-spin w-xl h-30" />
-					</Card>
-				))}
+			{(isLoginPending || isSignupPending) && (
+				<Card className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] shadow-none border-none w-2xl bg-transparent backdrop-blur-xs flex items-center h-80 justify-center">
+					<Loader className="animate-spin w-xl h-30" />
+				</Card>
+			)}
 		</div>
 	);
 }
