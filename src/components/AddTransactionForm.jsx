@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import {
 	Dialog,
 	DialogClose,
@@ -94,16 +93,11 @@ const AddTransactionForm = ({ variant = "default" }) => {
 	const { mutate: addIncome } = useAppMutation({
 		mutationFn: addIncomeTransaction,
 		invalidateQueries: ["dashboard", user?._id],
-		onError: (error) => {
-		},
 	});
 
 	const { mutate: addExpense } = useAppMutation({
 		mutationFn: addExpenseTransaction,
 		invalidateQueries: ["dashboard", user?._id],
-		onError: (error) => {
-			console.error(error);
-		},
 	});
 
 	const handleAddTransaction = async (formData) => {

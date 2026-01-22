@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-	Wallet,
 	Utensils,
 	BringToFront,
-	FireExtinguisher,
 	ReceiptIndianRupee,
 	ShoppingCart,
 	Search as SearchIcon,
@@ -25,7 +23,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -81,7 +78,6 @@ export default function Transaction() {
 	const { data } = useSelector((state) => state.dashboard);
 	const { transactions } = useExpenseAnalytics();
 	const { user } = useSelector((state) => state.auth);
-	const [isOpen, setIsOpen] = useState(false);
 	const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 	const [search, setSearch] = useState("");
 	const [filterCategory, setFilterCategory] = useState("all");
@@ -89,7 +85,6 @@ export default function Transaction() {
 	const [maxAmount, setMaxAmount] = useState("");
 	const [sortBy, setSortBy] = useState("newest");
 	const [myTransaction, setMyTransaction] = useState(transactions);
-	const handleDelete = (id) => {};
 
 	const resetFilters = () => {
 		setSearch("");

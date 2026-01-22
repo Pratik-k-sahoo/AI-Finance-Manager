@@ -12,29 +12,9 @@ import {
 import { Button } from "./ui/button";
 import { Download } from "lucide-react";
 import { downloadExpenseExcel, downloadIncomeExcel, downloadTransactionExcel } from "@/lib/api";
-import useGetQuery from "@/hooks/useGetQuery";
 
 const ExportDialog = ({ variant = "default" }) => {
 	const [open, setOpen] = useState(false);
-
-	const { refetch: exportIncome, isFetching: isIncomeLoading } = useGetQuery({
-		queryKey: ["export-income"],
-		queryFn: downloadIncomeExcel,
-		enabled: false,
-	});
-
-	const { refetch: exportExpense, isFetching: isExpenseLoading } = useGetQuery({
-		queryKey: ["export-expense"],
-		queryFn: downloadExpenseExcel,
-		enabled: false,
-	});
-
-	const { refetch: exportTransaction, isFetching: isTransactionLoading } =
-		useGetQuery({
-			queryKey: ["export-transaction"],
-			queryFn: downloadTransactionExcel,
-			enabled: false,
-		});
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>

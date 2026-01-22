@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import {
 	Dialog,
 	DialogClose,
@@ -12,7 +11,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
 import { Field, FieldGroup, FieldLabel } from "./ui/field";
 import {
 	Select,
@@ -25,8 +23,6 @@ import {
 import { Input } from "./ui/input";
 import useAppMutation from "@/hooks/useAppMutation";
 import {
-	addExpenseTransaction,
-	addIncomeTransaction,
 	updateExpenseTransaction,
 	updateIncomeTransaction,
 } from "@/lib/api";
@@ -149,7 +145,7 @@ const UpdateTransactionForm = ({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button type="button" variant={variant}>
+				<Button type="button" variant={variant} className="bg-amber-600 hover:bg-amber-500 cursor-pointer">
 					<Pencil className="text-primary-foreground w-8 h-8" />
 				</Button>
 			</DialogTrigger>

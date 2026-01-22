@@ -8,20 +8,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
-import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
 import DataTable from "../DataTable";
-
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Controller, useForm } from "react-hook-form";
-import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
-import { addExpenseTransaction, addIncomeTransaction } from "@/lib/api";
-import useAppMutation from "@/hooks/useAppMutation";
 import AddTransactionForm from "../AddTransactionForm";
 
 const categories = [

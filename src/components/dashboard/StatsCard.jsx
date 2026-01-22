@@ -1,27 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import DataBox from "../DataBox";
 import { Card } from "@/components/ui/card";
 import ChartPie from "../ChartPie";
-import ChartComponent from "../ChartComponent";
-import ChartLine from "../ChartLine";
 import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
 import { ResponsiveContainer } from "recharts";
 import { AiInsight } from "./AiInsight";
 import { useSelector } from "react-redux";
 
-const lineChartConfig = {
-	views: {
-		label: "Page Views",
-	},
-	desktop: {
-		label: "Desktop",
-		color: "var(--color-chart-1)",
-	},
-	mobile: {
-		label: "Mobile",
-		color: "var(--color-chart-2)",
-	},
-};
 const COLORS = [
 	"hsl(var(--chart-1))",
 	"hsl(var(--chart-2))",
@@ -32,7 +17,7 @@ const COLORS = [
 
 const StatsCard = () => {
   const {month} = useSelector(state => state.dashboard)
-	const { analytics, transactions } = useExpenseAnalytics(month);
+	const { analytics } = useExpenseAnalytics(month);
 	const chartData = analytics.categoryBreakdown.map((cat, index) => ({
 		name: cat.category,
 		value: cat.amount,

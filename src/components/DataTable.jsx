@@ -12,8 +12,6 @@ const DataTable = ({ details, id }) => {
 	const {
 		mutate: deleteTransaction,
 		isPending: incomePending,
-		isError: isIncomeError,
-		error: incomeError,
 	} = useAppMutation({
 		mutationFn: details.type === "expense" ? deleteExpense : deleteIncome,
 		invalidateQueries: ["dashboard", id],
@@ -26,7 +24,11 @@ const DataTable = ({ details, id }) => {
 		await deleteTransaction(id);
 	};
 	return (
-		<Card className="p-6">
+		<Card
+			className={`p-6 ${
+				details?.type === "income" ? "bg-accent/15" : "bg-destructive/15"
+			}`}
+		>
 			<div className="flex items-center justify-between">
 				<div>
 					<div className="flex gap-6">
@@ -37,7 +39,7 @@ const DataTable = ({ details, id }) => {
 							className={`text-md text-center capitalize ${
 								details?.type === "income"
 									? "bg-accent text-primary-foreground"
-									: "bg-foreground"
+									: "bg-destructive"
 							}`}
 							variant=""
 						>
@@ -69,7 +71,7 @@ const DataTable = ({ details, id }) => {
 					</Button>
 					<Button
 						asChild
-						className="w-fit"
+						className="w-fit bg-orange-600 hover:bg-orange-400 cursor-pointer"
 						onClick={() => handleDeleteTransaction(details._id)}
 					>
 						{incomePending ? (

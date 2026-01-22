@@ -14,10 +14,6 @@ const Header = ({ transactions }) => {
 					</p>
 				</div>
 
-        <div>
-          
-        </div>
-
 				<div className="flex items-center gap-3">
 					<button
 						type="button"

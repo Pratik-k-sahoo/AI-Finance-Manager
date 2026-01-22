@@ -1,6 +1,5 @@
 import React from "react";
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const ChartPie = ({ chartData }) => {
 	return (
