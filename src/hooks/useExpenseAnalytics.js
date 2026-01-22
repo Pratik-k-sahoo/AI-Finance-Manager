@@ -5,6 +5,9 @@ import {
 	isWithinInterval,
 	parseISO,
 	format,
+	subMonths,
+	startOfYear,
+	differenceInCalendarMonths,
 } from "date-fns";
 import { useSelector } from "react-redux";
 
@@ -17,7 +20,6 @@ export const useExpenseAnalytics = (month) => {
 	const transactions = useMemo(() => {
 		const incomes = Array.isArray(data?.incomes) ? data.incomes : [];
 		const expenses = Array.isArray(data?.expenses) ? data.expenses : [];
-		console.log(incomes, expenses);
 		const details = [
 			...incomes?.map((txn) => ({
 				...txn,
@@ -35,12 +37,29 @@ export const useExpenseAnalytics = (month) => {
 		return transactions.filter((t) => {
 			const date = new Date(t.date);
 			if (isNaN(date.getTime())) return false;
-
 			return isWithinInterval(date, {
 				start: monthStart,
 				end: monthEnd,
 			});
 		});
+	}, [transactions, monthStart, monthEnd]);
+
+	const prevMonthTransactions = useMemo(() => {
+		return {
+			data: transactions.filter((t) => {
+				const date = new Date(t.date);
+				if (isNaN(date.getTime())) return false;
+				return isWithinInterval(date, {
+					start: startOfYear(monthStart),
+					end: endOfMonth(subMonths(monthStart, 1)),
+				});
+			}),
+			monthCount:
+				differenceInCalendarMonths(
+					endOfMonth(subMonths(monthStart, 1)),
+					startOfYear(monthStart),
+				) + 1,
+		};
 	}, [transactions, monthStart, monthEnd]);
 
 	const analytics = useMemo(() => {
@@ -99,9 +118,11 @@ export const useExpenseAnalytics = (month) => {
 			netSavings: totalIncome - totalExpenses,
 			categoryBreakdown,
 			averageTransactionAmount:
-				monthTransactions.length > 0
-					? monthTransactions.reduce((sum, t) => sum + t.amount, 0) /
-					  monthTransactions.length
+				prevMonthTransactions.data.length > 0
+					? prevMonthTransactions.data.reduce(
+							(sum, t) => sum + (t.type === "income" ? t.amount : -t.amount),
+							0,
+						) / prevMonthTransactions.monthCount
 					: 0,
 			transactionCount: monthTransactions.length,
 		};
@@ -115,7 +136,7 @@ export const useExpenseAnalytics = (month) => {
 				alerts.push({
 					type: "warning",
 					message: `${cat.category} spending is ${cat.percentage.toFixed(
-						0
+						0,
 					)}% of your total expenses`,
 					category: cat.category,
 				});
@@ -137,7 +158,7 @@ export const useExpenseAnalytics = (month) => {
 				alerts.push({
 					type: "success",
 					message: `Excellent! You're saving ${savingsRate.toFixed(
-						0
+						0,
 					)}% of your income.`,
 				});
 			}
@@ -162,7 +183,7 @@ export const useExpenseAnalytics = (month) => {
 		const topCategory = analytics.categoryBreakdown[0];
 		if (topCategory && topCategory.percentage > 35) {
 			suggestions.push(
-				`Consider reducing ${topCategory.category} expenses by 10-15% to improve your savings.`
+				`Consider reducing ${topCategory.category} expenses by 10-15% to improve your savings.`,
 			);
 		}
 
@@ -170,14 +191,14 @@ export const useExpenseAnalytics = (month) => {
 			const savingsRate = (analytics.netSavings / analytics.totalIncome) * 100;
 			if (savingsRate < 10 && savingsRate > 0) {
 				suggestions.push(
-					"Try to save at least 20% of your income for a healthier financial future."
+					"Try to save at least 20% of your income for a healthier financial future.",
 				);
 			}
 		}
 
 		if (analytics.transactionCount < 5 && analytics.totalIncome > 0) {
 			suggestions.push(
-				"Track more daily expenses to get better insights into your spending habits."
+				"Track more daily expenses to get better insights into your spending habits.",
 			);
 		}
 

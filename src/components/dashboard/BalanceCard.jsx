@@ -17,13 +17,14 @@ import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
 import { TrendingUp } from "lucide-react";
 import { TrendingDown } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { setMonth } from "@/redux/slices/dashboardSlice";
 
-const BalanceCard = ({ currDate, setCurrDate }) => {
+const BalanceCard = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.auth);
-	const { data } = useSelector((state) => state.dashboard);
+	const { data, month } = useSelector((state) => state.dashboard);
 
-	const { analytics, transactions } = useExpenseAnalytics(currDate);
+	const { analytics, transactions } = useExpenseAnalytics(month);
 	const biggestExpense = transactions
 		.filter((t) => t.type === "expense")
 		.sort((a, b) => b.amount - a.amount)[0];
@@ -96,7 +97,7 @@ const BalanceCard = ({ currDate, setCurrDate }) => {
 						</div>
 						<div className="text-4xl flex flex-col items-center gap-2">
 							<h2 className="text-4xl font-bold tracking-tight flex items-center">
-								{(data?.totalIncome)?.toLocaleString("en-IN", {
+								{data?.totalIncome?.toLocaleString("en-IN", {
 									maximumFractionDigits: 2,
 									style: "currency",
 									currency: "INR",
@@ -138,8 +139,8 @@ const BalanceCard = ({ currDate, setCurrDate }) => {
 					} this month`}
 				/>
 				<Select
-					defaultValue={currDate}
-					onValueChange={(value) => setCurrDate(value)}
+					defaultValue={month}
+					onValueChange={(value) => dispatch(setMonth(value))}
 				>
 					<SelectTrigger className="w-fit text-black font-bold">
 						<SelectValue

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
 import { useNavigate } from "react-router";
 import api from "@/lib/axiosBase";
+import { resetDashboard } from "@/redux/slices/dashboardSlice";
 
 const Navbar = () => {
 	const { user } = useSelector((state) => state.auth);
@@ -32,13 +33,15 @@ const Navbar = () => {
 
 	const handleLogout = async () => {
 		try {
-			const response = await api.post(`/${import.meta.env.VITE_USER_URL}/logout`);
+			const response = await api.post(
+				`/${import.meta.env.VITE_USER_URL}/logout`,
+			);
 			if (response.status === 200) {
 				dispatch(logout());
+				dispatch(resetDashboard());
 			}
-			navigate("/auth");
+			navigate("/auth/login");
 		} catch (error) {
-			console.log(error);
 		}
 	};
 

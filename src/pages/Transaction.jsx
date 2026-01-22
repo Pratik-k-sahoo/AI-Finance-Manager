@@ -89,7 +89,6 @@ export default function Transaction() {
 	const [maxAmount, setMaxAmount] = useState("");
 	const [sortBy, setSortBy] = useState("newest");
 	const [myTransaction, setMyTransaction] = useState(transactions);
-	console.log(myTransaction);
 	const handleDelete = (id) => {};
 
 	const resetFilters = () => {
@@ -208,7 +207,6 @@ export default function Transaction() {
 						</Button>
 						<Button
 							onClick={() => {
-								console.log(data.last30DaysExpenses.transactions);
 								setMyTransaction(data.last30DaysExpenses.transactions);
 							}}
 							variant="secondary"
@@ -225,7 +223,6 @@ export default function Transaction() {
 						</Button>
 						<Button
 							onClick={() => {
-								console.log(data.recentTransaction);
 								setMyTransaction(data.recentTransaction);
 							}}
 							variant="secondary"
@@ -234,7 +231,6 @@ export default function Transaction() {
 						</Button>
 						<Button
 							onClick={() => {
-								console.log(transactions);
 								setMyTransaction(transactions);
 							}}
 							variant="secondary"

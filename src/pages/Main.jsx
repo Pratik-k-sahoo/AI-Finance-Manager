@@ -13,9 +13,9 @@ function Main({ currDate, setCurrDate }) {
 			{" "}
 			{/*min-h-screen*/}
 			<main className="container mx-auto px-4 py-8 space-y-6">
-				<BalanceCard currDate={currDate} setCurrDate={setCurrDate} />
-				<StatsCard currDate={currDate} setCurrDate={setCurrDate} />
-				<TransactionCard currDate={currDate} setCurrDate={setCurrDate} />
+				<BalanceCard />
+				<StatsCard />
+				<TransactionCard />
 			</main>
 		</div>
 	);

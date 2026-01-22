@@ -9,11 +9,6 @@ import { fetchDashboardData } from "@/lib/api";
 import { setDashboardData } from "@/redux/slices/dashboardSlice";
 
 const AppContent = () => {
-	const [currDate, setCurrDate] = useState(
-		new Date().toLocaleString("default", { month: "long" }) +
-			" " +
-			new Date().getFullYear()
-	);
 	const dispatch = useDispatch();
 	const {
 		isPending: fetchDashboardDataPending,
@@ -39,7 +34,7 @@ const AppContent = () => {
 					path="/"
 					element={
 						<ProtectedRoutes>
-							<Main currDate={currDate} setCurrDate={setCurrDate} />
+							<Main />
 						</ProtectedRoutes>
 					}
 				/>

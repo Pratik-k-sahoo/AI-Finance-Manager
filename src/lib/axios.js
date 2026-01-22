@@ -8,7 +8,6 @@ api.interceptors.response.use(
 	(response) => response,
 	(error) => {
 		if (error?.response?.status === 401) {
-			console.log(error);
 			const isOnLoginPage = window.location.pathname === "/login";
 
 			if (!isRedirect && !isOnLoginPage) {

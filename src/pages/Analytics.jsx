@@ -34,6 +34,17 @@ import { DollarSign } from "lucide-react";
 import { analytics } from "@/lib/analytics";
 import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
 import { useSelector } from "react-redux";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { useDispatch } from "react-redux";
+import { setMonth } from "@/redux/slices/dashboardSlice";
 
 const fallbackTransactions = [
 	{
@@ -241,7 +252,6 @@ const fallbackMonthlyData = [
 
 const CustomTooltip = ({ active, payload, label }) => {
 	if (active && payload && payload.length) {
-		console.log(payload);
 		return (
 			<div className="bg-card border border-border rounded-lg shadow-lg p-3">
 				<p className="text-sm font-medium text-card-foreground mb-1">{label}</p>
@@ -274,9 +284,10 @@ const COLORS = [
 ];
 
 function Analytics() {
-	const { data } = useSelector((state) => state.dashboard);
+	const dispatch = useDispatch();
+	const { data, month } = useSelector((state) => state.dashboard);
 	const { analytics, monthTransactions, transactions, monthlyBreakdown } =
-		useExpenseAnalytics();
+		useExpenseAnalytics(month);
 
 	const chartData = useMemo(() => {
 		const categoryData = analytics.categoryBreakdown;
@@ -295,7 +306,6 @@ function Analytics() {
 					fill: COLORS[idx % COLORS.length],
 				}))
 			: [];
-		console.log(data);
 		return data && data.length > 0 ? data : [];
 	}, [analytics.categoryBreakdown]);
 
@@ -307,11 +317,47 @@ function Analytics() {
 	return (
 		<div className="min-h-[calc(100vh-4.05rem)] bg-linear-to-br from-primary/5 via-background to-secondary/5">
 			<main className="container mx-auto px-4 py-8 space-y-6">
-				<div className="space-y-1 mb-6">
-					<h2 className="text-4xl font-bold tracking-tight">Analytics</h2>
-					<p className="text-muted-foreground">
-						Deep dive into your spending patterns and trends
-					</p>
+				<div className="space-y-1 mb-6 flex justify-between">
+					<div>
+						<h2 className="text-4xl font-bold tracking-tight">Analytics</h2>
+						<p className="text-muted-foreground">
+							Deep dive into your spending patterns and trends
+						</p>
+					</div>
+					<div>
+						<Select
+							defaultValue={month}
+							onValueChange={(value) => dispatch(setMonth(value))}
+						>
+							<SelectTrigger className="w-fit text-black font-bold">
+								<SelectValue
+									className="placeholder:font-bold"
+									placeholder={
+										new Date().toLocaleString("default", { month: "long" }) +
+										" " +
+										new Date().getFullYear()
+									}
+								/>
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectLabel>Select month</SelectLabel>
+									<SelectItem value="January 2026">January 2026</SelectItem>
+									<SelectItem value="February 2026">February 2026</SelectItem>
+									<SelectItem value="March 2026">March 2026</SelectItem>
+									<SelectItem value="April 2026">April 2026</SelectItem>
+									<SelectItem value="May 2026">May 2026</SelectItem>
+									<SelectItem value="June 2026">June 2026</SelectItem>
+									<SelectItem value="July 2026">July 2026</SelectItem>
+									<SelectItem value="August 2026">August 2026</SelectItem>
+									<SelectItem value="September 2026">September 2026</SelectItem>
+									<SelectItem value="October 2026">October 2026</SelectItem>
+									<SelectItem value="November 2026">November 2026</SelectItem>
+									<SelectItem value="December 2026">December 2026</SelectItem>
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 				<div className="grid gap-4 md:grid-cols-3">
 					<Card>
@@ -347,7 +393,7 @@ function Analytics() {
 											style: "currency",
 											currency: "INR",
 										})}`
-									: "No data"}
+									: "No Transaction"}
 							</p>
 						</CardContent>
 					</Card>
@@ -389,45 +435,55 @@ function Analytics() {
 								</div>
 							</div>
 						</CardHeader>
-						<CardContent>
-							<div className="h-[300px]">
-								<ResponsiveContainer width="100%" height="100%">
-									<PieChart>
-										<Pie
-											data={categoryData}
-											cx="50%"
-											cy="45%"
-											innerRadius={60}
-											outerRadius={100}
-											paddingAngle={2}
-											dataKey="amount"
-											label={(entry) =>
-												`${entry.category} ${entry.percentage.toFixed(0)}%`
-											}
-											labelLine={false}
-										>
-											{categoryData.map((entry, index) => (
-												<Cell key={`cell-${index}`} fill={entry.fill} />
-											))}
-										</Pie>
-										<Tooltip content={<CustomTooltip />} />
-									</PieChart>
-								</ResponsiveContainer>
-							</div>
-							<div className="flex flex-wrap justify-center gap-4 mt-4">
-								{categoryData.map((entry, index) => (
-									<div key={index} className="flex items-center gap-2">
-										<div
-											className="w-3 h-3 rounded-full"
-											style={{ backgroundColor: entry.fill }}
-										/>
-										<span className="text-sm text-muted-foreground">
-											{entry.category}
-										</span>
-									</div>
-								))}
-							</div>
-						</CardContent>
+						{categoryData.length > 0 ? (
+							<CardContent>
+								<div className="h-[300px]">
+									<ResponsiveContainer width="100%" height="100%">
+										<PieChart>
+											<Pie
+												data={categoryData}
+												cx="50%"
+												cy="45%"
+												innerRadius={60}
+												outerRadius={100}
+												paddingAngle={2}
+												dataKey="amount"
+												label={(entry) =>
+													`${entry.category} ${entry.percentage.toFixed(0)}%`
+												}
+												labelLine={false}
+											>
+												{categoryData.map((entry, index) => (
+													<Cell key={`cell-${index}`} fill={entry.fill} />
+												))}
+											</Pie>
+											<Tooltip content={<CustomTooltip />} />
+										</PieChart>
+									</ResponsiveContainer>
+								</div>
+								<div className="flex flex-wrap justify-center gap-4 mt-4">
+									{categoryData.map((entry, index) => (
+										<div key={index} className="flex items-center gap-2">
+											<div
+												className="w-3 h-3 rounded-full"
+												style={{ backgroundColor: entry.fill }}
+											/>
+											<span className="text-sm text-muted-foreground">
+												{entry.category}
+											</span>
+										</div>
+									))}
+								</div>
+							</CardContent>
+						) : (
+							<CardContent>
+								<div className="h-[340px] flex items-center justify-center">
+									<h2 className="text-foreground/50">
+										No Transaction done yet
+									</h2>
+								</div>
+							</CardContent>
+						)}
 					</Card>
 
 					<Card>
@@ -445,48 +501,60 @@ function Analytics() {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<div className="h-[340px]">
-								<ResponsiveContainer width="100%" height="100%">
-									<BarChart
-										data={categoryData}
-										margin={{ top: 20, right: 20, left: 20, bottom: 60 }}
-									>
-										<CartesianGrid
-											strokeDasharray="3 3"
-											stroke="hsl(var(--border))"
-										/>
-										<XAxis
-											dataKey="category"
-											tick={{
-												fill: "hsl(var(--muted-foreground))",
-												fontSize: 12,
-											}}
-											angle={-45}
-											textAnchor="end"
-											height={60}
-										/>
-										<YAxis
-											tick={{
-												fill: "hsl(var(--muted-foreground))",
-												fontSize: 12,
-											}}
-											tickFormatter={(value) =>
-												`${value.toLocaleString("en-IN", {
-													maximumFractionDigits: 2,
-													style: "currency",
-													currency: "INR",
-												})}`
-											}
-										/>
-										<Tooltip content={<CustomTooltip />} />
-										<Bar dataKey="amount" radius={[4, 4, 0, 0]} name="Expense">
-											{categoryData.map((entry, index) => (
-												<Cell key={`bar-${index}`} fill={entry.fill} />
-											))}
-										</Bar>
-									</BarChart>
-								</ResponsiveContainer>
-							</div>
+							{categoryData?.length > 0 ? (
+								<div className="h-[340px]">
+									<ResponsiveContainer width="100%" height="100%">
+										<BarChart
+											data={categoryData}
+											margin={{ top: 20, right: 20, left: 20, bottom: 60 }}
+										>
+											<CartesianGrid
+												strokeDasharray="3 3"
+												stroke="hsl(var(--border))"
+											/>
+											<XAxis
+												dataKey="category"
+												tick={{
+													fill: "hsl(var(--muted-foreground))",
+													fontSize: 12,
+												}}
+												angle={-45}
+												textAnchor="end"
+												height={60}
+											/>
+											<YAxis
+												tick={{
+													fill: "hsl(var(--muted-foreground))",
+													fontSize: 12,
+												}}
+												tickFormatter={(value) =>
+													`${value.toLocaleString("en-IN", {
+														maximumFractionDigits: 2,
+														style: "currency",
+														currency: "INR",
+													})}`
+												}
+											/>
+											<Tooltip content={<CustomTooltip />} />
+											<Bar
+												dataKey="amount"
+												radius={[4, 4, 0, 0]}
+												name="Expense"
+											>
+												{categoryData.map((entry, index) => (
+													<Cell key={`bar-${index}`} fill={entry.fill} />
+												))}
+											</Bar>
+										</BarChart>
+									</ResponsiveContainer>
+								</div>
+							) : (
+								<div className="h-[340px] flex items-center justify-center">
+									<h2 className="text-foreground/50">
+										No Transaction done yet
+									</h2>
+								</div>
+							)}
 						</CardContent>
 					</Card>
 				</div>
@@ -623,7 +691,7 @@ function Analytics() {
 								>
 									{Math.round(
 										(analytics.netSavings / analytics.totalIncome) * 100,
-									)}
+									) || 0}
 									%
 								</p>
 								<p className="text-sm text-muted-foreground mt-1">

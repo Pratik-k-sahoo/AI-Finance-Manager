@@ -12,7 +12,6 @@ export async function createUser(credentials) {
 		if (response?.status !== 201) {
 			throw new Error(response?.data?.message || "Failed to create a account.");
 		}
-		console.log(response.data);
 		return response?.data;
 	} catch (error) {
 		throw new Error(error?.message || "Something went wrong.");
@@ -46,7 +45,6 @@ export async function loginUser(credentials) {
 export async function fetchDashboardData() {
 	try {
 		const response = await api.get(`/${import.meta.env.VITE_DASHBOARD_URL}/`);
-		console.log(response.status);
 		return response?.data;
 	} catch (error) {
 		throw new Error(
@@ -147,7 +145,6 @@ export async function downloadIncomeExcel() {
 
 export async function downloadTransactionExcel() {
 	try {
-		console.log("Exporting dashboard");
 		const response = await api.get(
 			`/${import.meta.env.VITE_DASHBOARD_URL}/downloadexcel`,
 			{
@@ -205,7 +202,6 @@ export async function updateIncomeTransaction({credentials, id}) {
 
 		return response?.data;
 	} catch (error) {
-    console.log(error)
 		throw new Error(
 			error?.response?.data?.message ||
 				error?.data?.message ||
@@ -224,7 +220,6 @@ export async function updateExpenseTransaction({payload, id}) {
 
 		return response?.data;
 	} catch (error) {
-    console.log(error)
 		throw new Error(
 			error?.response?.data?.message ||
 				error?.data?.message ||

@@ -30,8 +30,9 @@ const COLORS = [
 	"hsl(var(--chart-5))",
 ];
 
-const StatsCard = ({ currDate }) => {
-	const { analytics, transactions } = useExpenseAnalytics(currDate);
+const StatsCard = () => {
+  const {month} = useSelector(state => state.dashboard)
+	const { analytics, transactions } = useExpenseAnalytics(month);
 	const chartData = analytics.categoryBreakdown.map((cat, index) => ({
 		name: cat.category,
 		value: cat.amount,
@@ -53,7 +54,7 @@ const StatsCard = ({ currDate }) => {
 					/>
 				</Card>
 				<Card className="p-6 flex items-center justify-center bg-foreground">
-					<AiInsight currDate={currDate} />
+					<AiInsight />
 				</Card>
 			</div>
 			<Card className="w-1/2 flex flex-col items-center justify-between p-8 overflow-hidden">

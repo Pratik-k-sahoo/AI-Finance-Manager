@@ -67,8 +67,9 @@ const categories = [
 	},
 ];
 
-const TransactionCard = ({ currDate }) => {
-	const { analytics } = useExpenseAnalytics(currDate);
+const TransactionCard = () => {
+  const {month} = useSelector(state => state.dashboard)
+	const { analytics } = useExpenseAnalytics(month);
 	const { user } = useSelector((state) => state.auth);
 	const [category, setCategory] = useState("all");
 

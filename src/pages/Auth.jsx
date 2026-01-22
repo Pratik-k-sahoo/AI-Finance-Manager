@@ -78,7 +78,6 @@ function Auth() {
 			setLoading(true);
 			await userLogin(e);
 		} catch (error) {
-			console.log(error);
 		} finally {
 			setLoading(false);
 		}
@@ -89,7 +88,6 @@ function Auth() {
 		try {
 			await userSignup(e);
 		} catch (error) {
-			console.log(error);
 		} finally {
 			setLoading(false);
 		}

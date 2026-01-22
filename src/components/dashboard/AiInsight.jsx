@@ -4,9 +4,9 @@ import { useExpenseAnalytics } from "@/hooks/useExpenseAnalytics";
 import { Sparkles, AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { useSelector } from "react-redux";
 
-export const AiInsight = ({ currDate }) => {
-	const { alerts, suggestions } = useExpenseAnalytics(currDate);
-
+export const AiInsight = () => {
+	const { month } = useSelector((state) => state.dashboard);
+	const { alerts, suggestions } = useExpenseAnalytics(month);
 	return (
 		<Card className="p-6">
 			<div className="flex items-center gap-2 mb-4">
@@ -20,15 +20,15 @@ export const AiInsight = ({ currDate }) => {
 						alert.type === "warning"
 							? AlertTriangle
 							: alert.type === "success"
-							? CheckCircle2
-							: Info;
+								? CheckCircle2
+								: Info;
 
 					const variant =
 						alert.type === "warning"
 							? "destructive"
 							: alert.type === "success"
-							? "default"
-							: "default";
+								? "default"
+								: "default";
 
 					return (
 						<Alert
@@ -56,7 +56,7 @@ export const AiInsight = ({ currDate }) => {
 								key={index}
 								className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10"
 							>
-								<Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+								<Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
 								<p className="text-sm">{suggestion}</p>
 							</div>
 						))}

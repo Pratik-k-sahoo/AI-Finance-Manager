@@ -95,7 +95,6 @@ const AddTransactionForm = ({ variant = "default" }) => {
 		mutationFn: addIncomeTransaction,
 		invalidateQueries: ["dashboard", user?._id],
 		onError: (error) => {
-			console.error(error);
 		},
 	});
 
@@ -129,7 +128,6 @@ const AddTransactionForm = ({ variant = "default" }) => {
 			setType("expense");
 			setOpen(false);
 		} catch (error) {
-			console.log(error);
 		}
 	};
 	return (

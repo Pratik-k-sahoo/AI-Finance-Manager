@@ -144,7 +144,6 @@ const UpdateTransactionForm = ({
 			setType(details?.type);
 			setOpen(false);
 		} catch (error) {
-			console.log(error);
 		}
 	};
 	return (
